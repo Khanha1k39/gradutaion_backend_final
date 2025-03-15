@@ -11,22 +11,27 @@ const crypto = require("crypto");
 const { BadRequestError, AuthFailureError } = require("../core/error.response");
 const { findByEmail } = require("./user.service");
 const { getInfoData } = require("../utils");
+const {
+  createUser,
+  findUserByEmail,
+} = require("../models/repository/user.repo");
 class AccessService {
   static signUp = async ({ name, email, password }) => {
+    email = email.toLowerCase();
     console.log("reqboy", name, email, password);
-    const hodelUser = await userModel.findOne({ email }).lean();
+    const hodelUser = await findUserByEmail(email);
     if (hodelUser) {
       throw new BadRequestError("User already register");
     }
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const newUser = await userModel.create({
+    const newUser = await createUser({
       name,
       email,
       password: passwordHash,
-      roles: [RoleShop.USER],
     });
     if (newUser) {
+      console.log("newuser", newUser);
       const privateKey = crypto.randomBytes(64).toString("hex");
       const publicKey = crypto.randomBytes(64).toString("hex");
       console.log({ privateKey, publicKey });
@@ -36,19 +41,15 @@ class AccessService {
         publicKey,
         privateKey
       );
-      console.log("tokens", tokens);
       await KeyStokenService.createKey({
         userId: newUser._id,
         publicKey,
         privateKey,
         refreshToken: tokens.refreshToken,
       });
-
       return {
-        data: {
-          user: newUser,
-          tokens,
-        },
+        user: newUser,
+        tokens,
       };
     }
     return {
