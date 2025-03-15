@@ -19,7 +19,7 @@ const createUser = async ({ email, password, name }) => {
   });
 };
 const findUserByEmail = async (email) => {
-  return await userModel.findOne({ email }).lean();
+  return await userModel.findOne({ email: email.toLowerCase() }).lean();
 };
 
 module.exports = {

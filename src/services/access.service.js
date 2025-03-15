@@ -57,13 +57,13 @@ class AccessService {
     };
   };
   static login = async ({ name, email, password }) => {
-    const foundShop = await findByEmail({ email });
-    console.log("foundshop", foundShop);
+    const foundUser = await findUserByEmail(email);
+    console.log("foundUser", foundUser);
 
-    if (!foundShop) {
-      throw new BadRequestError("Shop is not registered");
+    if (!foundUser) {
+      throw new BadRequestError("User is not registered");
     }
-    const match = await bcrypt.compare(password, foundShop.password);
+    const match = await bcrypt.compare(password, foundUser.password);
     if (!match) {
       throw new AuthFailureError("Password is not match");
     }
@@ -71,20 +71,20 @@ class AccessService {
     const privateKey = crypto.randomBytes(64).toString("hex");
     const publicKey = crypto.randomBytes(64).toString("hex");
     const tokens = await createTokenPair(
-      { userId: foundShop._id, email },
+      { userId: foundUser._id, email },
       publicKey,
       privateKey
     );
     await KeyStokenService.createKey({
-      userId: foundShop._id,
+      userId: foundUser._id,
       publicKey,
       privateKey,
       refreshToken: tokens.refreshToken,
     });
     return {
-      shop: getInfoData({
+      user: getInfoData({
         fields: ["_id", "email", "name"],
-        object: foundShop,
+        object: foundUser,
       }),
       tokens,
     };

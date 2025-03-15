@@ -6,7 +6,11 @@ const AcessValidation = require("../../validations/access.validation");
 const router = express.Router();
 
 //signup
-router.post("/user/login", asyncHandler(accessController.login));
+router.post(
+  "/user/login",
+  asyncHandler(AcessValidation.login),
+  asyncHandler(accessController.login)
+);
 
 router.post(
   "/user/signup",
