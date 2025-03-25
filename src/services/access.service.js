@@ -15,6 +15,7 @@ const {
   createUser,
   findUserByEmail,
 } = require("../models/repository/user.repo");
+const printingServicesModel = require("../models/printingServices.model");
 class AccessService {
   static signUp = async ({ name, email, password }) => {
     email = email.toLowerCase();
@@ -57,6 +58,7 @@ class AccessService {
     };
   };
   static login = async ({ name, email, password }) => {
+    printingServicesModel.findById(1);
     const foundUser = await findUserByEmail(email);
     console.log("foundUser", foundUser);
 

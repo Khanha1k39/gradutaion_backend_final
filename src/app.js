@@ -3,7 +3,11 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const compression = require("compression");
 const app = express();
+const path = require("path");
+
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use(
   express.urlencoded({
     extended: true,

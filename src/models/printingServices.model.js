@@ -4,16 +4,14 @@ const DOCUMENT_NAME = "printing_service";
 const COLLECTION_NAME = "printing_services";
 const printingServiceSchema = new Schema(
   {
-    paperType: {
+    size: {
       type: String,
       required: true,
     },
-    sizes: [
-      {
-        size: { type: String, required: true },
-        price: { type: Number, min: 0, required: true },
-      },
-    ],
+    price: {
+      type: Number,
+      required: true,
+    },
   },
   {
     timestamps: true,
